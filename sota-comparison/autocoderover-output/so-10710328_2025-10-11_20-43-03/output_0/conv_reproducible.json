@@ -1,0 +1,18 @@
+[
+    {
+        "role": "system",
+        "content": "You are an experienced software engineer responsible for reproducing given issues."
+    },
+    {
+        "role": "user",
+        "content": "Here is an issue:\n\nComparing numpy arrays containing NaN\n<p>For my unittest, I want to check if two arrays are identical.  Reduced example:</p>\n<pre><code>a = np.array([1, 2, np.NaN])\nb = np.array([1, 2, np.NaN])\n\nif np.all(a==b):\n    print 'arrays are equal'\n</code></pre>\n<p>This does not work because <code>nan != nan</code>.\nWhat is the best way to proceed?</p>\n"
+    },
+    {
+        "role": "user",
+        "content": "Tell me whether the issue contains a reproducible example. Your answer should take the following Json format:\n```\n{\n    \"has-reproducible-example\": ...\n}\n```\nwhere \"has-reproducible-example\" should be either `true` or `false`."
+    },
+    {
+        "role": "assistant",
+        "content": "{\n    \"has-reproducible-example\": true\n}"
+    }
+]

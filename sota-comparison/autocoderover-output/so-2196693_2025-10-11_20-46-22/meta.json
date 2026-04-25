@@ -1,0 +1,11 @@
+{
+    "task_info": {
+        "base_commit": "ccf026f",
+        "created_at": "2025-10-12T01:08:42Z",
+        "problem_statement": "Improving Numpy Performance\n<p>I'd like to improve the performance of convolution using python, and was hoping for some insight on how to best go about improving performance. </p>\n\n<p>I am currently using scipy to perform the convolution, using code somewhat like the snippet below:</p>\n\n<pre><code>import numpy\nimport scipy\nimport scipy.signal\nimport timeit\n\na=numpy.array ( [ range(1000000) ] )\na.reshape(1000,1000)\nfilt=numpy.array( [ [ 1, 1, 1 ], [1, -8, 1], [1,1,1] ] )\n\ndef convolve():\n  global a, filt\n  scipy.signal.convolve2d ( a, filt, mode=\"same\" )\n\nt=timeit.Timer(\"convolve()\", \"from __main__ import convolve\")\nprint \"%.2f sec/pass\" % (10 * t.timeit(number=10)/100)\n</code></pre>\n\n<p>I am processing image data, using grayscale (integer values between 0 and 255), and I currently get about a quarter of a second per convolution. My thinking was to do one of the following:</p>\n\n<p>Use corepy, preferably with some optimizations\n  Recompile numpy with icc &amp; ikml.\n  Use python-cuda.</p>\n\n<p>I was wondering if anyone had any experience with any of these approaches ( what sort of gain would be typical, and if it is worth the time ), or if anyone is aware of a better library to perform convolution with Numpy.</p>\n\n<p>Thanks!</p>\n\n<p><strong>EDIT:</strong> </p>\n\n<p>Speed up of about 10x by re-writing python loop in C over using Numpy. </p>\n",
+        "instance_id": "so-2196693"
+    },
+    "setup_info": {
+        "repo_path": "/home/Documents/MSR-2026/auto-code-rover/setup/so-2196693"
+    }
+}

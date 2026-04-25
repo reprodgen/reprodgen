@@ -1,0 +1,18 @@
+[
+    {
+        "role": "system",
+        "content": "You are an experienced software engineer responsible for reproducing given issues."
+    },
+    {
+        "role": "user",
+        "content": "Here is an issue:\n\nHow do I get word frequency in a corpus using Scikit Learn CountVectorizer?\n<p>I'm trying to compute a simple word frequency using scikit-learn's <code>CountVectorizer</code>.</p>\n\n<pre><code>import pandas as pd\nimport numpy as np\nfrom sklearn.feature_extraction.text import CountVectorizer\n\ntexts=[\"dog cat fish\",\"dog cat cat\",\"fish bird\",\"bird\"]\ncv = CountVectorizer()\ncv_fit=cv.fit_transform(texts)\n\nprint cv.vocabulary_\n{u'bird': 0, u'cat': 1, u'dog': 2, u'fish': 3}\n</code></pre>\n\n<p>I was expecting it to return <code>{u'bird': 2, u'cat': 3, u'dog': 2, u'fish': 2}</code>.</p>\n"
+    },
+    {
+        "role": "user",
+        "content": "Tell me whether the issue contains a reproducible example. Your answer should take the following Json format:\n```\n{\n    \"has-reproducible-example\": ...\n}\n```\nwhere \"has-reproducible-example\" should be either `true` or `false`."
+    },
+    {
+        "role": "assistant",
+        "content": "{\n    \"has-reproducible-example\": true\n}"
+    }
+]

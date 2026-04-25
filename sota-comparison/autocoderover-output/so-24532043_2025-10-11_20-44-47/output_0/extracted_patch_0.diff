@@ -1,0 +1,14 @@
+diff --git a/24532043.py b/24532043.py
+index d948482..5b2c9d0 100644
+--- a/24532043.py
++++ b/24532043.py
+@@ -88,8 +88,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
+ 
+     # Step 4: BUG - closeEvent is in the wrong class (UI class instead of main window class)
+     def closeEvent(self, event):
+-        print("User has clicked the red x on the main window")
+-        event.accept()
++        self.ui.closeEvent(event)
+ 
+ # Step 5: Create main window class that actually gets displayed
+ class GUIForm(QtWidgets.QMainWindow):

@@ -1,0 +1,13 @@
+diff --git a/45416684.py b/45416684.py
+index af99698..f3ae87d 100644
+--- a/45416684.py
++++ b/45416684.py
+@@ -31,7 +31,7 @@ print(df2_working)
+ # Step 3: Buggy approach - user expects this to modify df2 directly
+ print("\n--- Buggy approach ---")
+ # This creates a new object but doesn't modify df2
+-df2[["Weight","Height","BootSize","SuitSize"]].astype(str).replace('0', np.nan)
++df2[["Weight","Height","BootSize","SuitSize"]] = df2[["Weight","Height","BootSize","SuitSize"]].astype(str).replace('0', np.nan).astype(df2[["Weight","Height","BootSize","SuitSize"]].dtypes)
+ 
+ # Step 4: Show that df2 remains unchanged
+ print("DataFrame df2 after buggy approach (zeros remain):")

@@ -1,0 +1,14 @@
+diff --git a/20076195.py b/20076195.py
+index b3ac513..ba66998 100644
+--- a/20076195.py
++++ b/20076195.py
+@@ -38,8 +38,7 @@ print("This may take unexpectedly long time...")
+ 
+ # BUG: Using count() on grouped data in an inefficient way
+ # The user tries to count after groupby which is redundant and slow
+-word_grouping_for_count = df[['word','frequency']].groupby('word')
+-Occurrences_of_Words = word_grouping_for_count.count().reset_index()
++Occurrences_of_Words = df['word'].value_counts().reset_index()
+ Occurrences_of_Words.columns = ['word', 'count']
+ print("Count operation completed (slower than expected)")
+ print(Occurrences_of_Words.head())

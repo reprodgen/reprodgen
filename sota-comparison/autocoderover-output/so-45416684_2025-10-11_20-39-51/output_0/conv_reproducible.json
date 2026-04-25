@@ -1,0 +1,18 @@
+[
+    {
+        "role": "system",
+        "content": "You are an experienced software engineer responsible for reproducing given issues."
+    },
+    {
+        "role": "user",
+        "content": "Here is an issue:\n\nPython Pandas replace multiple columns zero to Nan\n<p>List with attributes of persons loaded into pandas dataframe <code>df2</code>. For cleanup I want to replace value zero (<code>0</code> or <code>'0'</code>) by <code>np.nan</code>. </p>\n\n<pre><code>df2.dtypes\n\nID                   object\nName                 object\nWeight              float64\nHeight              float64\nBootSize             object\nSuitSize             object\nType                 object\ndtype: object\n</code></pre>\n\n<p>Working code to set value zero to <code>np.nan</code>:</p>\n\n<pre><code>df2.loc[df2['Weight'] == 0,'Weight'] = np.nan\ndf2.loc[df2['Height'] == 0,'Height'] = np.nan\ndf2.loc[df2['BootSize'] == '0','BootSize'] = np.nan\ndf2.loc[df2['SuitSize'] == '0','SuitSize'] = np.nan\n</code></pre>\n\n<p>Believe this can be done in a similar/shorter way:</p>\n\n<pre><code>df2[[\"Weight\",\"Height\",\"BootSize\",\"SuitSize\"]].astype(str).replace('0',np.nan)\n</code></pre>\n\n<p>However the above does not work. The zero's remain in df2. How to tackle this?</p>\n"
+    },
+    {
+        "role": "user",
+        "content": "Tell me whether the issue contains a reproducible example. Your answer should take the following Json format:\n```\n{\n    \"has-reproducible-example\": ...\n}\n```\nwhere \"has-reproducible-example\" should be either `true` or `false`."
+    },
+    {
+        "role": "assistant",
+        "content": "{\n    \"has-reproducible-example\": false\n}"
+    }
+]

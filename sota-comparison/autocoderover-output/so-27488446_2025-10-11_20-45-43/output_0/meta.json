@@ -1,0 +1,11 @@
+{
+    "task_info": {
+        "base_commit": "ccf026f",
+        "created_at": "2025-10-12T01:08:28Z",
+        "problem_statement": "How do I get word frequency in a corpus using Scikit Learn CountVectorizer?\n<p>I'm trying to compute a simple word frequency using scikit-learn's <code>CountVectorizer</code>.</p>\n\n<pre><code>import pandas as pd\nimport numpy as np\nfrom sklearn.feature_extraction.text import CountVectorizer\n\ntexts=[\"dog cat fish\",\"dog cat cat\",\"fish bird\",\"bird\"]\ncv = CountVectorizer()\ncv_fit=cv.fit_transform(texts)\n\nprint cv.vocabulary_\n{u'bird': 0, u'cat': 1, u'dog': 2, u'fish': 3}\n</code></pre>\n\n<p>I was expecting it to return <code>{u'bird': 2, u'cat': 3, u'dog': 2, u'fish': 2}</code>.</p>\n",
+        "instance_id": "so-27488446"
+    },
+    "setup_info": {
+        "repo_path": "/home/Documents/MSR-2026/auto-code-rover/setup/so-27488446"
+    }
+}

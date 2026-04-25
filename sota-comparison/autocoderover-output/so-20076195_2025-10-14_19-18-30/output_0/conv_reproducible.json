@@ -1,0 +1,18 @@
+[
+    {
+        "role": "system",
+        "content": "You are an experienced software engineer responsible for reproducing given issues."
+    },
+    {
+        "role": "user",
+        "content": "Here is an issue:\n\nWhat is the most efficient way of counting occurrences in pandas?\n<p>I have a large (about 12M rows) DataFrame <code>df</code>:</p>\n<pre><code>df.columns = ['word','documents','frequency']\n</code></pre>\n<p>The following ran in a timely fashion:</p>\n<pre><code>word_grouping = df[['word','frequency']].groupby('word')\nMaxFrequency_perWord = word_grouping[['frequency']].max().reset_index()\nMaxFrequency_perWord.columns = ['word','MaxFrequency']\n</code></pre>\n<p>However, this is taking an unexpectedly long time to run:</p>\n<pre><code>Occurrences_of_Words = word_grouping[['word']].count().reset_index()\n</code></pre>\n<p>What am I doing wrong here?  Is there a better way to count occurrences in a large DataFrame?</p>\n<pre><code>df.word.describe()\n</code></pre>\n<p>ran pretty well, so I really did not expect this <code>Occurrences_of_Words</code> DataFrame to take very long to build.</p>"
+    },
+    {
+        "role": "user",
+        "content": "Tell me whether the issue contains a reproducible example. Your answer should take the following Json format:\n```\n{\n    \"has-reproducible-example\": ...\n}\n```\nwhere \"has-reproducible-example\" should be either `true` or `false`."
+    },
+    {
+        "role": "assistant",
+        "content": "{\n    \"has-reproducible-example\": false\n}"
+    }
+]

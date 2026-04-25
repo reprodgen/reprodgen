@@ -1,0 +1,11 @@
+{
+    "task_info": {
+        "base_commit": "ccf026f",
+        "created_at": "2025-10-12T01:07:09Z",
+        "problem_statement": "How do I plot in real-time in a while loop?\n<p>I am trying to plot some data from a camera in real time using OpenCV. However, the real-time plotting (using matplotlib) doesn't seem to be working.</p>\n\n<p>I've isolated the problem into this simple example:</p>\n\n<pre><code>fig = plt.figure()\nplt.axis([0, 1000, 0, 1])\n\ni = 0\nx = list()\ny = list()\n\nwhile i &lt; 1000:\n    temp_y = np.random.random()\n    x.append(i)\n    y.append(temp_y)\n    plt.scatter(i, temp_y)\n    i += 1\n    plt.show()\n</code></pre>\n\n<p>I would expect this example to plot 1000 points individually. What actually happens is that the window pops up with the first point showing (ok with that), then waits for the loop to finish before it populates the rest of the graph.</p>\n\n<p>Any thoughts why I am not seeing points populated one at a time?</p>\n",
+        "instance_id": "so-11874767"
+    },
+    "setup_info": {
+        "repo_path": "/home/Documents/MSR-2026/auto-code-rover/setup/so-11874767"
+    }
+}

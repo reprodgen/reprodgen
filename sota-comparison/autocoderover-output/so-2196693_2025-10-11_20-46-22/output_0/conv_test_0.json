@@ -1,0 +1,14 @@
+[
+    {
+        "role": "system",
+        "content": "You are an experienced software engineer responsible for reproducing given issues."
+    },
+    {
+        "role": "user",
+        "content": "Here is an issue:\n\nImproving Numpy Performance\n<p>I'd like to improve the performance of convolution using python, and was hoping for some insight on how to best go about improving performance. </p>\n\n<p>I am currently using scipy to perform the convolution, using code somewhat like the snippet below:</p>\n\n<pre><code>import numpy\nimport scipy\nimport scipy.signal\nimport timeit\n\na=numpy.array ( [ range(1000000) ] )\na.reshape(1000,1000)\nfilt=numpy.array( [ [ 1, 1, 1 ], [1, -8, 1], [1,1,1] ] )\n\ndef convolve():\n  global a, filt\n  scipy.signal.convolve2d ( a, filt, mode=\"same\" )\n\nt=timeit.Timer(\"convolve()\", \"from __main__ import convolve\")\nprint \"%.2f sec/pass\" % (10 * t.timeit(number=10)/100)\n</code></pre>\n\n<p>I am processing image data, using grayscale (integer values between 0 and 255), and I currently get about a quarter of a second per convolution. My thinking was to do one of the following:</p>\n\n<p>Use corepy, preferably with some optimizations\n  Recompile numpy with icc &amp; ikml.\n  Use python-cuda.</p>\n\n<p>I was wondering if anyone had any experience with any of these approaches ( what sort of gain would be typical, and if it is worth the time ), or if anyone is aware of a better library to perform convolution with Numpy.</p>\n\n<p>Thanks!</p>\n\n<p><strong>EDIT:</strong> </p>\n\n<p>Speed up of about 10x by re-writing python loop in C over using Numpy. </p>\n"
+    },
+    {
+        "role": "user",
+        "content": "Please try to write a standalone python file `reproducer.py` to reproduce the issue. Put the file in a code block.\n\nThe file would be put in the root directory of the project and executed by `python3 reproducer.py`. The script should raise an `AssertionError` when the issue is present and print a stack trace of the issue. The script should also exit with code 0 when the issue is fixed.\n\nPlease use the following function to print the stack trace, so that the line numbers of the statements are shown clearly:\n```\ndef print_stacktrace(e: Exception):\n    import traceback    import sys    tb = traceback.extract_tb(e.__traceback__)\n    print(\"Traceback (most recent call last):\", file=sys.stderr)\n    for frame in tb:\n        line_number = frame.lineno\n        code_context = frame.line.strip() if frame.line else \"Unknown\"\n        print(f'  File \"{frame.filename}\"', file=sys.stderr)\n        print(f\"    {line_number}: {code_context}\", file=sys.stderr)\n    print(f\"{e.__class__.__name__}: {e}\", file=sys.stderr)\n```\n"
+    }
+]

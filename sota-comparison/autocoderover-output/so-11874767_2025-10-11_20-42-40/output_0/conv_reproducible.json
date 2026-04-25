@@ -1,0 +1,18 @@
+[
+    {
+        "role": "system",
+        "content": "You are an experienced software engineer responsible for reproducing given issues."
+    },
+    {
+        "role": "user",
+        "content": "Here is an issue:\n\nHow do I plot in real-time in a while loop?\n<p>I am trying to plot some data from a camera in real time using OpenCV. However, the real-time plotting (using matplotlib) doesn't seem to be working.</p>\n\n<p>I've isolated the problem into this simple example:</p>\n\n<pre><code>fig = plt.figure()\nplt.axis([0, 1000, 0, 1])\n\ni = 0\nx = list()\ny = list()\n\nwhile i &lt; 1000:\n    temp_y = np.random.random()\n    x.append(i)\n    y.append(temp_y)\n    plt.scatter(i, temp_y)\n    i += 1\n    plt.show()\n</code></pre>\n\n<p>I would expect this example to plot 1000 points individually. What actually happens is that the window pops up with the first point showing (ok with that), then waits for the loop to finish before it populates the rest of the graph.</p>\n\n<p>Any thoughts why I am not seeing points populated one at a time?</p>\n"
+    },
+    {
+        "role": "user",
+        "content": "Tell me whether the issue contains a reproducible example. Your answer should take the following Json format:\n```\n{\n    \"has-reproducible-example\": ...\n}\n```\nwhere \"has-reproducible-example\" should be either `true` or `false`."
+    },
+    {
+        "role": "assistant",
+        "content": "{\n    \"has-reproducible-example\": true\n}"
+    }
+]
