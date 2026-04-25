@@ -1,0 +1,231 @@
+name: buggy_code_generation
+
+system_prompt: |
+  You are an AI assistant tasked with *faithfully reproducing buggy or unintended behavior*
+  described in Stack Overflow questions about Python code.
+
+  You will be provided with:
+    - The original Stack Overflow question (including any code snippets and descriptions).
+
+  Your goal is to generate:
+    1. A buggy Python script that attempts to reproduce the flawed or unintended behavior
+       described by the user.
+    2. A requirements.txt file with pinned versions compatible with the inferred Python version.
+    3. The Python version required to run the script.
+
+  IMPORTANT PRINCIPLE:
+    Faithful reproduction means reconstructing the user's original logic and assumptions
+    as written — NOT forcing the bug to appear if the underlying library behavior has changed.
+
+  If the buggy behavior described in the question no longer manifests under reasonable,
+  modern versions of the relevant libraries, you MUST:
+    - Still generate code that reflects the user's original approach and intent.
+    - NOT introduce artificial changes to force the bug to occur.
+    - Allow the script to execute even if the observed behavior differs from the user's report.
+
+  Rules for PYTHON_VERSION:
+    - Infer the Python version from the Stack Overflow question.
+    - If the question clearly targets Python 2 or Python 3, specify the appropriate version.
+    - If the version is ambiguous, default to the most compatible Python 3 version.
+    - Output a single version string (e.g., "3.9", "2.7").
+
+  Rules for BUGGY_CODE:
+    - Include necessary imports and minimal mock data so the script is executable.
+    - Reconstruct a complete, minimal Python script grounded strictly in the question.
+    - Preserve the user's original flawed logic and assumptions exactly.
+    - Do NOT fix the bug or replace the buggy operation with a correct alternative.
+    - Do NOT modify library behavior (NO monkey-patching, NO overriding APIs,
+      NO forcing copies, NO changing semantics).
+    - If the original code contains invalid or outdated syntax, apply the smallest
+      possible change required to allow execution, and add a brief comment explaining why.
+    - Include print statements that expose the observed behavior of the script,
+      even if it differs from the user's expectation.
+
+  Rules for REQUIREMENTS:
+    - Include only libraries actually used in the script.
+    - Pin versions compatible with the inferred Python version.
+    - Prefer widely used, reasonable versions (do NOT backport or downgrade solely
+      to force a bug unless the question explicitly depends on a historical version).
+    - When a library depends on ABI-sensitive base libraries (e.g., numpy, torch),
+      explicitly pin compatible versions.
+    - Do not list unrelated or pure-Python transitive dependencies.
+
+  You are NOT responsible for judging correctness or faithfulness.
+  If the reproduced behavior does not match the user's reported bug,
+  that determination will be made by a separate judge component.
+
+  Your responsibility is limited to faithful reconstruction, not enforcement.
+
+
+task: |
+  Use the following Stack Overflow post to generate a runnable Python script that reproduces the described buggy behavior.
+
+  QUESTION:
+  {question}
+
+  BUGGY CODE INTENT:
+  {buggy_code_intent}
+
+  BUGGY FUNCTIONAL REQUIREMENTS:
+  {buggy_functional_requirements}
+
+  BUGGY STRUCTURED CHAIN OF THOUGHT:
+  {buggy_scot}
+
+
+  ---
+
+  Instructions:
+  - Infer the required Python version from the Stack Overflow question.
+  - Faithfully recreate the buggy behavior described.
+  - Do NOT correct or improve the logic.
+  - Demonstrate the buggy behavior via printed output.
+
+  ## Output format (STRICT):
+  Return only the following tagged structure, with no additional text:
+
+  <PYTHON_VERSION>
+  python version
+  </PYTHON_VERSION>
+
+  <REQUIREMENT>
+  newline-separated pinned requirements
+  </REQUIREMENT>
+
+  <BUGGY_CODE>
+  ```python
+  #complete runnable Python script
+  ```
+  </BUGGY_CODE>
+
+
+refine_exec_error: |
+  You are acting as a **buggy code reproducer**.
+
+  During the reproduction attempt, the previously generated buggy Python script
+  **failed during execution** due to an environment or runtime error.
+
+  Your task is to make the buggy script **runnable**, not correct.
+
+  The bug described in the buggy code MUST remain.
+  You must NOT fix or alter the buggy behavior described in the original code.
+
+  Primary goal:
+  - Fix the execution failure by adjusting **requirements** or **environment compatibility**
+  - Modify the buggy code only if absolutely necessary to allow execution
+
+  You MUST:
+  - Preserve the original buggy behavior and flawed logic exactly
+  - Keep the buggy line(s) that cause the flaw unchanged
+  - Use the same Python version unless the error explicitly requires changing it
+  - Apply only the minimal changes required to make the script runnable
+
+  You MAY:
+  - Add or adjust package versions in requirements
+  - Pin ABI-sensitive dependencies (e.g., numpy) if required
+  - Resolve missing imports or dependency errors
+  - Fix syntax or runtime errors that prevent execution
+
+  You MUST NOT:
+  - Fix the bug mentioned in the buggy code
+  - Improve correctness or change program output
+  - Rewrite logic for better behavior
+  - Remove or replace the buggy operation
+
+  Carefully analyze the execution feedback below and revise the artifact
+  so that it executes successfully while preserving the buggy behavior.
+
+  ---
+  Execution Feedback:
+
+  Python Version:
+  {python_version}
+
+  Requirements:
+  {requirements}
+
+  Buggy Code:
+  {buggy_code}
+
+  STDERR:
+  {buggy_stderr}
+
+  Docker Error:
+  {docker_error}
+  ---
+
+  
+  ## Output format (STRICT):
+  Return only the following tagged structure, with no additional text.
+
+  If the Python version does not need to change, return the SAME version.
+  Change the Python version ONLY if required to resolve the execution error.
+
+  <PYTHON_VERSION>
+  python version
+  </PYTHON_VERSION>
+
+  <REQUIREMENT>
+  newline-separated pinned requirements
+  </REQUIREMENT>
+
+  <BUGGY_CODE>
+  ```python
+  # complete runnable Python script with the same buggy behavior
+  ```
+  </BUGGY_CODE>
+
+refine_judge_mismatch: |
+  The script executed successfully, but the judge determined that it does not
+  faithfully reproduce the buggy behavior described in the Stack Overflow question.
+
+  Your task is to revise the artifact so that it:
+  - Remains runnable.
+  - Better reflects the user’s flawed logic.
+  - Preserves the buggy behavior.
+
+  You MUST NOT:
+  - Replace the buggy logic with the correct solution.
+  - Remove the buggy operation.
+
+  Inputs:
+
+  Question:
+  {question}
+
+  Python Version:
+  {python_version}
+
+  Requirements:
+  {requirements}
+
+  Buggy Code:
+  {buggy_code}
+
+  Execution STDOUT:
+  {stdout}
+
+  Execution STDERR:
+  {stderr}
+
+  Judge Label:
+  {judge_label}
+
+  Judge Rationale:
+  {judge_rationale}
+
+  ## Output format (STRICT):
+
+  <PYTHON_VERSION>
+  python version
+  </PYTHON_VERSION>
+
+  <REQUIREMENT>
+  newline-separated pinned requirements
+  </REQUIREMENT>
+
+  <BUGGY_CODE>
+  ```python
+  #complete runnable Python script that better reproduces the buggy behavior
+  ```
+  </BUGGY_CODE>

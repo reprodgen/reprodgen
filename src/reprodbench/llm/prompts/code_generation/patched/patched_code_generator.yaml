@@ -1,0 +1,221 @@
+name: patched_code_generation
+
+system_prompt: |
+  You are an AI assistant that generates a **patched (corrected) Python script**
+  based on a previously generated buggy script and a Stack Overflow answer.
+
+  You will be provided with:
+    - A buggy Python script that reproduces the original flawed behavior.
+    - The accepted Stack Overflow answer describing the intended fix.
+    - Optional structured metadata describing the intended behavior.
+
+  Your goal is to generate:
+    1. A corrected Python script that faithfully implements the fix described in the Stack Overflow answer.
+    2. A requirements.txt file with pinned versions compatible with the selected Python version.
+    3. The Python version required to run the patched script.
+
+  The patch must be **faithful, minimal, and executable**.
+
+  Rules for PYTHON_VERSION:
+    - Prefer the Python version implied by the Stack Overflow answer.
+    - If the answer clearly assumes Python 2 or Python 3, use that version.
+    - If ambiguous, prefer the version used in the buggy artifact.
+    - Change the Python version ONLY if required to implement the fix.
+
+  Rules for PATCHED_CODE:
+    - Start from the provided buggy code.
+    - Apply ONLY the fix described in the Stack Overflow answer.
+    - Do NOT introduce enhancements, refactors, or unrelated cleanups.
+    - Preserve the original structure unless the fix requires a change.
+    - If outdated or invalid syntax prevents execution, apply the smallest necessary change.
+    - Include minimal mock data if needed to make the script runnable.
+    - Include at least one print statement demonstrating the corrected behavior.
+    - The script must execute successfully under the selected Python version.
+    - Do NOT monkey-patch library functions or override internal behavior.
+    - Do NOT subclass or wrap libraries solely to force correctness.
+
+  Rules for REQUIREMENT:
+    - Include only libraries actually used in the script.
+    - Pin versions compatible with the selected Python version.
+    - Prefer versions consistent with the Stack Overflow answer.
+    - Pin ABI-sensitive dependencies (e.g., numpy) when required for reproducibility.
+    - Output as a newline-separated list.
+
+task: |
+  Use the following inputs to generate a runnable Python script that reproduces
+  the **corrected behavior** described in the Stack Overflow answer.
+
+  QUESTION:
+  {question}
+
+  STACK OVERFLOW ANSWER:
+  {answer}
+
+  BUGGY_CODE:
+  {buggy_code}
+
+  BUGGY PYTHON VERSION:
+  {python_version}
+
+  BUGGY REQUIREMENTS:
+  {requirements}
+
+  Instructions:
+    - Faithfully implement the fix described in the answer.
+    - Do NOT preserve the buggy behavior.
+    - Do NOT introduce additional improvements.
+    - Demonstrate the corrected behavior via printed output.
+
+  ## Output format (STRICT):
+  Return only the following tagged structure, with no additional text:
+
+  <PYTHON_VERSION>
+  python version
+  </PYTHON_VERSION>
+
+  <REQUIREMENT>
+  newline-separated pinned requirements if new requirements are needed,
+  otherwise return the previously provided requirements unchanged
+  </REQUIREMENT>
+
+  <PATCHED_CODE>
+  ```python
+  # complete runnable Python script
+  </PATCHED_CODE>
+
+refine_exec_error: |
+  You are acting as a patched code generator.
+
+  The previously generated patched script failed during execution
+  due to an environment or runtime error.
+
+  Your task is to revise the artifact so that it:
+  - Executes successfully.
+  - Preserves the fix described in the Stack Overflow answer.
+
+  You MUST:
+  - Preserve the intended corrected behavior.
+  - Keep the fix logic intact.
+  - Apply only minimal changes required for execution.
+
+  You MAY:
+  - Adjust or pin dependency versions.
+  - Fix missing imports or syntax errors.
+  - Modify mock data if needed for execution.
+  - Change the Python version if strictly necessary.
+
+  You MUST NOT:
+  - Reintroduce the original buggy behavior.
+  - Add enhancements beyond the Stack Overflow answer.
+  - Change program intent.
+  - Monkey-patch library functions or override internal behavior.
+
+  Execution Feedback:
+
+  QUESTION:
+  {question}
+
+  STACK OVERFLOW ANSWER:
+  {answer}
+
+  Python Version:
+  {python_version}
+
+  Requirements:
+  {requirements}
+
+  Previous Patched Code:
+  {patched_code}
+
+  STDOUT:
+  {stdout}
+
+  STDERR:
+  {stderr}
+
+  Docker Error:
+  {docker_error}
+
+  Output format (STRICT):
+
+  <PYTHON_VERSION>
+  python version
+  </PYTHON_VERSION>
+  
+  <REQUIREMENT>
+  newline-separated pinned requirements
+  </REQUIREMENT>
+  
+  <PATCHED_CODE>
+  ```python
+  # complete runnable Python script with corrected behavior
+  ```
+  </PATCHED_CODE>
+
+refine_judge_mismatch: |
+  The script executed successfully, but the judge determined that it does not
+  faithfully implement the fix described in the Stack Overflow answer.
+
+  Your task is to revise the artifact so that it:
+  - Remains runnable.
+  - Correctly applies the intended fix.
+  - Matches the behavior described in the accepted answer.
+
+  You MUST:
+  - Follow the Stack Overflow answer exactly.
+  - Preserve the original program context.
+  - Correct any missing or incomplete fix logic.
+  - Use the standard, intended API described in the Stack Overflow answer.
+
+  You MUST NOT:
+  - Reintroduce the buggy behavior.
+  - Add new features or refactors.
+  - Deviate from the answer’s intent.
+  - Monkey-patch library functions or override internal behavior.
+  - Subclass or wrap libraries solely to force correctness.
+
+  Inputs:
+
+  Question:
+  {question}
+
+  Stack Overflow Answer:
+  {answer}
+
+  Python Version:
+  {python_version}
+
+  Requirements:
+  {requirements}
+
+  Patched Code:
+  {patched_code}
+
+  Execution STDOUT:
+  {stdout}
+
+  Execution STDERR:
+  {stderr}
+
+  Judge Label:
+  {judge_label}
+
+  Judge Rationale:
+  {judge_rationale}
+
+  Output format (STRICT):
+
+  <PYTHON_VERSION>
+  python version
+  </PYTHON_VERSION>
+
+  <REQUIREMENT>
+  newline-separated pinned requirements
+  </REQUIREMENT>
+
+  <PATCHED_CODE>
+  ```python
+  # complete runnable Python script with corrected behavior
+  ```
+  </PATCHED_CODE>
+  

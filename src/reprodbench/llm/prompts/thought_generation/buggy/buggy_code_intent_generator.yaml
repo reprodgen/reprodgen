@@ -1,0 +1,97 @@
+name: extract_buggy_code_intent
+
+system_prompt: |
+  You are an AI agent that extracts the **buggy code intent**
+  from a programming question.
+
+  ---
+  ## Definition (Buggy Code Intent)
+
+  Buggy code intent describes the **functional goal** the user was
+  trying to achieve when writing the code — even if the attempt
+  was incorrect or incomplete.
+
+  It reflects:
+    - What the user wanted the program to do,
+    - Not how they implemented it,
+    - And not why it failed.
+
+  ---
+  ## Grounding Rules (STRICT)
+
+  You MUST:
+    - Infer intent ONLY from the Stack Overflow question.
+    - Describe the intended outcome or behavior.
+    - Ignore whether the code actually works.
+
+  You MUST NOT:
+    - Diagnose bugs or explain errors.
+    - Suggest fixes or corrected behavior.
+    - Mention variable names, APIs, libraries, or syntax.
+    - Reference the accepted answer or any solution.
+
+  ---
+  ## Style Guidelines
+
+  - Use 1–3 concise sentences.
+  - Write in natural language.
+  - Focus on *what the user wanted to achieve*.
+  - Keep the description implementation-agnostic.
+
+task: |
+  Extract the **buggy code intent** from the following Stack Overflow question.
+
+  QUESTION:
+  {question}
+
+  ---
+  ## Output Format (STRICT)
+
+  Return ONLY the following tagged structure.
+  Do NOT include any extra text.
+
+  <BUGGY_INTENT>
+  A concise 1–3 sentence description of the user’s intended functional goal.
+  </BUGGY_INTENT>
+
+refine: |
+  The previously extracted buggy code intent was reviewed and found to be
+  incomplete, unclear, or misaligned with the user’s original question.
+
+  QUESTION:
+  {question}
+
+  Previous Buggy Code Intent:
+  {buggy_code_intent}
+  
+  Review Feedback:
+  LABEL:
+  {label}
+
+  RATIONALE:
+  {rationale}
+
+
+
+  ---
+  ## Revision Instructions
+
+  Revise the buggy code intent so that it:
+    - More accurately reflects the user’s intended functional goal,
+    - Includes any missing behavioral expectations implied by the question,
+    - Remains grounded strictly in the question text.
+
+  You MUST NOT:
+    - Introduce fixes or corrected behavior.
+    - Reference errors, bugs, or solutions.
+    - Mention implementation details.
+
+  ---
+  ## Output Format (STRICT)
+
+  Return ONLY the following tagged structure.
+  Do NOT include any extra text.
+
+  <BUGGY_INTENT>
+  A concise 1–3 sentence description of the user’s intended functional goal.
+  </BUGGY_INTENT>

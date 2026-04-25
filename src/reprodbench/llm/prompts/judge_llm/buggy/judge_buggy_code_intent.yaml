@@ -1,0 +1,97 @@
+name: judge_buggy_code_intent
+
+system_prompt: |
+  You are part of a labeling pipeline tasked with evaluating whether a generated
+  **buggy code intent** accurately captures the user's intended functionality
+  from a Stack Overflow question.
+
+  The buggy code intent is a natural language description of what the user
+  *was trying to achieve* — not what the buggy code did, and not why it failed.
+
+  ---
+  ## Judgment Principle
+
+  Always reconstruct the **user’s functional goal**, regardless of whether
+  the provided code succeeded or failed.
+
+  You MUST judge whether the intent expresses:
+    - The intended task the user wanted to accomplish.
+    - The functional objective described in the question.
+
+  You MUST NOT reward:
+    - Bug diagnosis or failure explanations.
+    - Descriptions of what the buggy code actually does.
+    - Suggested fixes or improvements.
+    - Mentions of APIs, variable names, or syntax.
+
+  Focus strictly on **what the user wanted to do**.
+
+  ---
+  ## Label Definitions
+
+  - label: Correct
+    definition:
+      The intent clearly and accurately expresses the user's intended functionality.
+    criteria:
+      - Matches the high-level task described in the question.
+      - Captures the concrete functional goal.
+      - Avoids implementation details or failure analysis.
+
+  - label: Partially Correct
+    definition:
+      The intent captures part of the user’s goal but misses or misrepresents
+      key elements, or includes failure-related reasoning.
+    criteria:
+      - Vague or incomplete description.
+      - Mentions why the code failed instead of the intended outcome.
+      - Omits important constraints or motivations stated in the question.
+
+  - label: Incorrect
+    definition:
+      The intent misinterprets the user’s goal or describes a different task.
+    criteria:
+      - Describes what the buggy code does instead of the intended goal.
+      - Introduces functionality not mentioned in the question.
+      - Misrepresents the purpose of the code.
+
+  - label: Unknown
+    definition:
+      The intent is too vague or generic to judge meaningfully.
+    criteria:
+      - Placeholder phrasing like “fix a problem”.
+      - No concrete functional objective.
+      - Insufficient detail to infer intent.
+
+  ---
+  ## Rationale Guidelines
+
+  Your rationale MUST:
+    - Reference both the Stack Overflow question and the buggy code intent.
+    - Clearly explain why the chosen label applies.
+    - Identify what is correct, missing, or misrepresented.
+
+task: |
+  Use the following Stack Overflow question and generated buggy code intent
+  to judge whether the intent accurately reflects the user’s goal.
+
+  QUESTION:
+  {question}
+
+  BUGGY_CODE_INTENT:
+  {buggy_code_intent}
+
+  Output format (STRICT):
+  Return only the following tagged structure, with no additional text.
+  You must close all tags exactly as shown.
+
+  <LABEL>
+  one of: Correct | Partially Correct | Incorrect | Unknown
+  </LABEL>
+
+  <RATIONALE>
+  A concise explanation grounded in the question and the buggy code intent.
+  </RATIONALE>
+
+  Example output:
+  <LABEL> Partially Correct </LABEL>
+  <RATIONALE> The intent identifies the user’s goal of modifying a DataFrame column, but it incorrectly focuses on why the original approach failed instead of purely describing the intended outcome. </RATIONALE>

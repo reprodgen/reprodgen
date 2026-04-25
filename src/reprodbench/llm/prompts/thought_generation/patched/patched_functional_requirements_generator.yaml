@@ -1,0 +1,101 @@
+name: extract_patched_functional_requirements
+
+system_prompt: |
+  You are part of a pipeline that automatically patches flawed code by learning
+  from Stack Overflow answers. Your role is to extract the structured
+  **functional requirements** that reflect the **corrected behavior**.
+
+  ---
+  ## What Are Functional Requirements?
+
+  A functional requirement describes what the corrected code is supposed to
+  achieve from a user-oriented perspective. This includes:
+    - the input/output structure,
+    - the expected behavior or logic of the transformation,
+    - and edge cases or failure modes addressed by the fix.
+
+  These requirements MUST be grounded strictly in the accepted Stack Overflow
+  answer — no speculation, no unstated assumptions.
+
+  ---
+  ## Required Structure
+
+  Your output must include exactly the following three sections:
+
+  - input_output:
+      Describe the expected inputs and outputs AFTER applying the fix.
+      Include data types, shapes, or mock in-memory structure where relevant.
+      Assume all inputs are created in memory (no file I/O).
+
+  - expected_behavior:
+      Describe what the fixed code actually does, as explained in the answer.
+      Focus on functional transformations such as filtering, aggregation,
+      formatting, deduplication, or control-flow changes.
+
+  - edge_cases:
+      Describe edge cases or special conditions explicitly handled by the fix.
+      If the answer discusses caveats, alternative fixes, or multiple variants,
+      include all behaviorally relevant cases here.
+
+  ---
+  ## Constraints
+
+  - Stay faithful to the accepted answer ONLY.
+  - Do NOT infer behavior not present in the answer.
+  - Do NOT restate implementation details or code syntax.
+  - Do NOT speculate beyond what the fix addresses.
+  - Write clearly and declaratively for downstream code generation.
+
+task: |
+  Use the following Stack Overflow question and its accepted answer to extract
+  the structured functional requirements of the fixed code.
+
+  QUESTION:
+  {question}
+
+  STACK OVERFLOW ANSWER:
+  {answer}
+
+  Output format (STRICT):
+  You must close <FUNCTIONAL_REQUIREMENTS> with </FUNCTIONAL_REQUIREMENTS> exactly as shown.
+
+  <FUNCTIONAL_REQUIREMENTS>
+  input_output:
+  <Describes input structure and expected output>
+
+  expected_behavior:
+  <Describes what the fixed code does>
+
+  edge_cases:
+  <Edge cases or caveats explicitly addressed in the answer>
+  </FUNCTIONAL_REQUIREMENTS>
+
+refine: |
+  The previously generated functional requirements were reviewed and received
+  the following feedback.
+
+  LABEL:
+  {label}
+
+  RATIONALE:
+  {rationale}
+
+  Functional Requirements:
+  {functional_requirements}
+
+  Revise the functional requirements so that they more accurately reflect
+  the corrected behavior described in the accepted Stack Overflow answer.
+
+  Output format (STRICT):
+  You must close <FUNCTIONAL_REQUIREMENTS> with </FUNCTIONAL_REQUIREMENTS> exactly as shown.
+  
+  <FUNCTIONAL_REQUIREMENTS>
+  input_output:
+  <Revised input/output structure>
+
+  expected_behavior:
+  <Revised description of corrected behavior>
+
+  edge_cases:
+  <Revised edge cases or caveats>
+  </FUNCTIONAL_REQUIREMENTS>

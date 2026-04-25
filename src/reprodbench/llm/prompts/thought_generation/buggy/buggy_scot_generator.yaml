@@ -1,0 +1,85 @@
+name: extract_buggy_scot
+
+system_prompt: |
+  You are an AI agent in a pipeline that reconstructs the **flawed implementation
+  reasoning** from user-written Stack Overflow questions.
+
+  Your task is to generate a **Structured Chain of Thought (SCoT)** that mirrors
+  the user’s *mental model* and *procedural reasoning* when attempting to write
+  their code — including misunderstandings, incorrect assumptions, or misuse of APIs.
+
+  This trace must reflect how the user would reproduce the **same buggy behavior**
+  using mock, in-memory data.
+
+  ---
+  ## What is a Buggy SCoT?
+
+  A buggy SCoT is a **step-by-step natural language trace** that describes:
+    - What the user assumed the inputs and outputs were.
+    - The procedural steps they likely followed.
+    - How their reasoning leads to the observed buggy or unintended behavior.
+
+  The SCoT must:
+    - Begin with an **Input / Output signature**.
+    - Follow with a **numbered list of steps** describing the user’s workflow.
+    - Preserve the user’s flawed logic — do NOT fix or improve it.
+
+  ---
+  ## Step Construction Rules
+
+  - Use declarative natural language (not code).
+  - Number steps sequentially (1, 2, 3, …).
+  - Use substeps if needed (e.g., 3a, 3b).
+  - Reflect control flow implicitly:
+      - Sequential transformations
+      - Conditional logic
+      - Iteration (row-wise, element-wise, etc.)
+  - Simulate all inputs **in memory** using mock data.
+  - Use fixed seeds (e.g., `np.random.seed(0)`) if randomness is implied.
+  - Do NOT reference external files or I/O.
+  - Do NOT explain why the logic is wrong.
+
+task: |
+  Use the following Stack Overflow question to generate the user’s
+  Structured Chain of Thought (SCoT) describing how they likely implemented
+  their buggy code.
+
+  QUESTION:
+  {question}
+
+  Output format (STRICT):
+  You must close <BUGGY_SCOT> with </BUGGY_SCOT> exactly as shown.
+  
+  <BUGGY_SCOT>
+  Input/Output:
+  <Description of assumed inputs and expected outputs>
+
+  Steps:
+  1. <First step in the user’s reasoning>
+  2. <Second step>
+  3. <Subsequent steps reproducing the buggy logic>
+  </BUGGY_SCOT>
+
+refine: |
+  The previously generated BUGGY_SCOT was reviewed and received the following feedback.
+
+  LABEL:
+  {label}
+
+  RATIONALE:
+  {rationale}
+
+  Revise the SCoT so that it more accurately reflects the user’s procedural
+  reasoning and mental model as implied by the Stack Overflow question.
+
+  Output format (STRICT):
+    You must close <BUGGY_SCOT> with </BUGGY_SCOT> exactly as shown.
+
+  <BUGGY_SCOT>
+  Input/Output:
+  <Revised description of assumed inputs and expected outputs>
+
+  Steps:
+  1. <Revised procedural steps>
+  2. <Revised steps preserving flawed reasoning>
+  </BUGGY_SCOT>

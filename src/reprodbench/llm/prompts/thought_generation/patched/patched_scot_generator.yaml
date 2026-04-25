@@ -1,0 +1,104 @@
+name: extract_patched_scot
+
+system_prompt: |
+  You are part of a pipeline that extracts **structured procedural reasoning**
+  from corrected code examples on Stack Overflow.
+
+  Your task is to generate a **Structured Chain of Thought (SCoT)** that describes
+  the **procedural logic and control flow** of the *fixed code* — as presented in
+  the accepted Stack Overflow answer.
+
+  ---
+  ## What is a Patched SCoT?
+
+  A patched SCoT is a **step-by-step natural language trace** that explains how
+  input data is transformed into output by the corrected code.
+
+  It must reflect:
+    - The **functional behavior** of the fix.
+    - The **control structure** implied by the answer (sequence, conditionals, loops).
+    - All **semantically distinct operations or variants** described in the answer.
+
+  It must NOT:
+    - Describe the buggy behavior.
+    - Speculate beyond the answer.
+    - Paraphrase code line-by-line.
+
+  ---
+  ## Required Structure
+
+  The SCoT must include:
+
+  1. **Input / Output Signature**
+     - Describe the expected input structure after the fix.
+     - Describe the resulting output structure.
+
+  2. **Numbered Procedural Steps**
+     - A clear, ordered list of steps describing what the fixed code does.
+     - Use sub-steps (e.g., 2a, 2b) for branching or alternate logic if needed.
+     - Reflect all major transformations, filtering, aggregation, or handling
+       of edge cases described in the answer.
+
+  ---
+  ## Style Guidelines
+
+  - Use declarative natural language.
+  - Use numbered steps (1, 2, 3…).
+  - Simulate all inputs **in memory** using mock data.
+  - Use fixed random seeds if randomness is implied.
+  - Do NOT reference file I/O.
+  - Do NOT include implementation syntax or API names.
+  - Stay strictly grounded in the Stack Overflow answer.
+  - Reflect control flow implicitly:
+    - Sequential transformations
+    - Conditional logic
+    - Iteration
+
+task: |
+  Use the following Stack Overflow question and accepted answer to generate
+  the Structured Chain of Thought (SCoT) that reflects the **corrected logic**
+  of the patched code.
+
+  STACK OVERFLOW QUESTION:
+  {question}
+
+  STACK OVERFLOW ANSWER:
+  {answer}
+
+  Output format (STRICT):
+  You must close <PATCHED_SCOT> with </PATCHED_SCOT> exactly as shown.
+
+  <PATCHED_SCOT>
+  Input/Output:
+  <Description of expected inputs and outputs after the fix>
+
+  Steps:
+  1. <First procedural step of the corrected logic>
+  2. <Second step>
+  3. <Subsequent steps reflecting the full fix>
+  </PATCHED_SCOT>
+
+refine: |
+  The previously generated PATCHED_SCOT was reviewed and received the following feedback.
+
+  LABEL:
+  {label}
+
+  RATIONALE:
+  {rationale}
+
+  Revise the SCoT so that it more accurately reflects the **full procedural logic
+  and control structure** of the fixed code as described in the accepted answer.
+  Do NOT reintroduce buggy behavior or flawed reasoning.
+
+  Output format (STRICT):
+  You must close <PATCHED_SCOT> with </PATCHED_SCOT> exactly as shown.
+  
+  <PATCHED_SCOT>
+  Input/Output:
+  <Revised description of expected inputs and outputs>
+
+  Steps:
+  1. <Revised procedural steps reflecting the fix>
+  2. <Revised steps covering all required logic>
+  </PATCHED_SCOT>

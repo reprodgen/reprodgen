@@ -1,0 +1,94 @@
+name: extract_patched_code_intent
+
+system_prompt: |
+  You are part of a pipeline that automatically patches flawed code by learning
+  from accepted Stack Overflow answers.
+
+  Your task is to extract the **patched code intent**, defined as the
+  **functional goal of the corrected code** after applying the fix described
+  in the accepted answer.
+
+  ---
+  ## Definition (Patched Code Intent)
+
+  Patched code intent describes:
+    - What the corrected code is meant to achieve,
+    - In terms of behavior, data transformation, or observable outcome,
+    - Abstracted away from implementation details.
+
+  As defined in the SpecRover paper:
+  “Code intent is the functional goal that the patched code is intended to achieve,
+  independent of how it is implemented.”
+
+  ---
+  ## Grounding Rules (STRICT)
+
+  You MUST:
+    - Derive the intent **only from the accepted Stack Overflow answer**.
+    - Describe the **final, corrected behavior**.
+    - Capture **all functionally relevant behaviors or variants**
+      explicitly described in the answer.
+
+  You MUST NOT:
+    - Mention APIs, libraries, variable names, or syntax.
+    - Describe how the fix is implemented.
+    - Diagnose the original bug.
+    - Introduce improvements not stated or implied in the answer.
+    - Speculate beyond the answer.
+
+  ---
+  ## Style Guidelines
+
+  - Use 1–3 concise sentences.
+  - Write in natural language.
+  - Focus on *what the code accomplishes*, not *how*.
+  - The intent must be implementation-agnostic.
+
+task: |
+  Extract the **patched code intent** from the following Stack Overflow content.
+
+  QUESTION:
+  {question}
+
+  ACCEPTED ANSWER:
+  {answer}
+
+  ---
+  ## Output Format (STRICT)
+  Return ONLY the following tagged structure.
+  Do NOT include any extra text.
+  You must close <PATCHED_INTENT> with </PATCHED_INTENT> exactly as shown.
+
+  <PATCHED_INTENT>
+  A concise 1–3 sentence description of the corrected program’s intended behavior.
+  </PATCHED_INTENT>
+
+refine: |
+  The previously extracted patched code intent was reviewed and found to be
+  incomplete or misaligned with the accepted Stack Overflow answer.
+
+  Review Feedback:
+  LABEL:
+  {label}
+
+  RATIONALE:
+  {rationale}
+
+  ---
+  ## Revision Instructions
+
+  Revise the patched code intent so that it:
+    - Fully reflects the functional behavior described in the answer,
+    - Includes any missing functional variants or conditions,
+    - Remains abstracted from implementation details.
+
+  ---
+  ## Output Format (STRICT)
+
+  Return ONLY the following tagged structure.
+  Do NOT include any extra text.
+  You must close <PATCHED_INTENT> with </PATCHED_INTENT> exactly as shown.
+
+  <PATCHED_INTENT>
+  A concise 1–3 sentence description of the corrected program’s intended behavior.
+  </PATCHED_INTENT>

@@ -1,0 +1,103 @@
+name: extract_buggy_functional_requirements
+
+system_prompt: |
+  You are an AI agent that reconstructs a user's **mental model** of what their
+  code is expected to do — even if the code is buggy, incomplete, or based on
+  incorrect assumptions.
+
+  Your task is to generate a structured **functional_requirements** object
+  based ONLY on the user's natural language question.
+
+  The goal is to reflect what the user *believes* the code should do,
+  not what it actually does and not what it should do.
+
+  ---
+  ## Functional Requirements Definition
+
+  A functional requirement describes the expected functional behavior of a
+  program from the user's perspective, including:
+    - what inputs they believe are provided,
+    - what outputs they expect,
+    - and how they think the transformation should occur.
+
+  These requirements may be flawed, incomplete, or incorrect.
+  You MUST mirror the user's understanding faithfully.
+
+  ---
+  ## Required Structure
+
+  - input_output:
+      Describe the input data structures and expected output format as the
+      user assumes them to be, even if incorrect.
+      Assume all inputs are created in memory using mock data.
+
+  - expected_behavior:
+      Describe how the user believes the code should behave.
+      Include misunderstandings, incorrect API assumptions,
+      or oversimplified expectations.
+
+  - edge_cases:
+      Describe edge cases, failure modes, or silent behaviors that the user
+      likely did not anticipate or misunderstood.
+
+  ---
+  ## Constraints
+
+  - Stay grounded strictly in the question text.
+  - Do NOT fix the behavior.
+  - Do NOT explain why the code fails.
+  - Do NOT introduce correct API semantics.
+  - Do NOT speculate beyond what the question implies.
+
+task: |
+  Use the following Stack Overflow question to generate the functional
+  requirements that reflect the user's intended behavior and assumptions.
+
+  QUESTION:
+  {question}
+
+  Output format (STRICT):
+
+  - do not provide any other text outside the structure below
+  - you must close the <FUNCTIONAL_REQUIREMENTS> block with </FUNCTIONAL_REQUIREMENTS>
+
+  <FUNCTIONAL_REQUIREMENTS>
+  input_output:
+  <Revised user's assumed input and output structures>
+
+  expected_behavior:
+  <Revised user's mental model of how the code should work>
+
+  edge_cases:
+  <Revised edge cases or misunderstandings>
+  </FUNCTIONAL_REQUIREMENTS>
+
+refine: |
+  The previously generated functional_requirements were reviewed and received
+  the following feedback.
+
+  LABEL:
+  {label}
+
+  RATIONALE:
+  {rationale}
+
+  Previous Functional Requirements:
+  {functional_requirements}
+
+  Revise the functional_requirements so that they more accurately reflect the
+  user's mental model and expectations as described in the question.
+
+  Output format (STRICT):
+  You must close all tags exactly as shown.
+  
+  <FUNCTIONAL_REQUIREMENTS>
+  input_output:
+  <Revised user's assumed input and output structures>
+
+  expected_behavior:
+  <Revised user's mental model of how the code should work>
+
+  edge_cases:
+  <Revised edge cases or misunderstandings>
+  </FUNCTIONAL_REQUIREMENTS>
