@@ -1,4 +1,4 @@
-# ReprodBench
+# ReprodGen
 
 ReprodBench is a repository for generating and evaluating buggy Python code and patched Python code from structured software problem inputs.
 
